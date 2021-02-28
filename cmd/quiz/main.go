@@ -2,13 +2,10 @@ package main
 
 import (
 	"github.com/evleria/quiz-cli/pkg/cmd/root"
-	"log"
+	"github.com/evleria/quiz-cli/pkg/cmdutils"
 )
 
 func main() {
 	cmd := root.NewRootCmd()
-	err := cmd.Execute()
-	if err != nil {
-		log.Fatal(err)
-	}
+	cmdutils.CheckError(cmd.Execute())
 }
