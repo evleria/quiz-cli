@@ -1,16 +1,11 @@
 package config
 
 type Categories struct {
-	Categories []Category
-}
-
-type Category struct {
-	Name       string
-	Variations []Variation
+	Categories map[string][]Variation
 }
 
 type Variation struct {
-	Name      string
+	Variation string
 	Questions []Question
 }
 

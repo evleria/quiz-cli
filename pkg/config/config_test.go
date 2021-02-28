@@ -11,33 +11,29 @@ import (
 func TestConfig_ReadConfig(t *testing.T) {
 	content :=
 		`categories:
-  - name: git
-    variations:
-    - name: git init
-      questions:
-      - question: "How to initialize local git repository?"
-        answers:
-        - answer: "git init"
-          correct: true
-        - answer: "git create"
-        - answer: "git start"
-        - answer: "git new"`
+  git:
+  - variation: git init
+    questions:
+    - question: "How to initialize local git repository?"
+      answers:
+      - answer: "git init"
+        correct: true
+      - answer: "git create"
+      - answer: "git start"
+      - answer: "git new"`
 	fixture := &Categories{
-		Categories: []Category{
-			{
-				Name: "git",
-				Variations: []Variation{
-					{
-						Name: "git init",
-						Questions: []Question{
-							{
-								Question: "How to initialize local git repository?",
-								Answers: []Answer{
-									{Answer: "git init", IsCorrect: true},
-									{Answer: "git create"},
-									{Answer: "git start"},
-									{Answer: "git new"},
-								},
+		Categories: map[string][]Variation{
+			"git": {
+				{
+					Variation: "git init",
+					Questions: []Question{
+						{
+							Question: "How to initialize local git repository?",
+							Answers: []Answer{
+								{Answer: "git init", IsCorrect: true},
+								{Answer: "git create"},
+								{Answer: "git start"},
+								{Answer: "git new"},
 							},
 						},
 					},
