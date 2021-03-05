@@ -6,7 +6,7 @@ import (
 	"io/ioutil"
 )
 
-const DefaultPath = "~/.quiz.yml"
+const DefaultPath = "~/.quiz.yaml"
 
 type Config struct {
 	fs   afero.Fs
@@ -16,7 +16,7 @@ type Config struct {
 func NewConfig(fs afero.Fs, path string) *Config {
 	return &Config{
 		fs:   fs,
-		path: path,
+		path: ExpandPath(path),
 	}
 }
 
