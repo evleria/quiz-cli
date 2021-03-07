@@ -1,10 +1,9 @@
-package printer
+package quiz
 
 import (
 	"bufio"
 	"fmt"
 	"github.com/evleria/quiz-cli/pkg/config"
-	"github.com/evleria/quiz-cli/pkg/runner"
 	"io"
 )
 
@@ -23,7 +22,7 @@ func (p *Printer) PrintQuestion(question config.Question) error {
 		return err
 	}
 	for i, answer := range question.Answers {
-		if _, err := fmt.Fprintf(p.writer, "%d. %s\n", i + 1, answer.Answer); err != nil {
+		if _, err := fmt.Fprintf(p.writer, "%d. %s\n", i+1, answer.Answer); err != nil {
 			return err
 		}
 	}
@@ -31,11 +30,10 @@ func (p *Printer) PrintQuestion(question config.Question) error {
 	return p.writer.Flush()
 }
 
-func (p *Printer) PrintResult(result runner.QuizResult) error {
+func (p *Printer) PrintResult(result QuizResult) error {
 	if _, err := fmt.Fprintf(p.writer, "%d/%d (%.1f%%)\n", result.Correct, result.Total, float64(result.Correct)/float64(result.Total)*100); err != nil {
 		return err
 	}
 
 	return p.writer.Flush()
 }
-

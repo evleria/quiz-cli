@@ -13,8 +13,12 @@ func TestConfig_ReadConfig(t *testing.T) {
 		`categories:
   git:
   - variation: git init
+    links:
+    - https://git-scm.com/docs/git-init
     questions:
     - question: "How to initialize local git repository?"
+      links:
+      - https://git-scm.com/docs/git-init
       answers:
       - answer: "git init"
         correct: true
@@ -26,9 +30,11 @@ func TestConfig_ReadConfig(t *testing.T) {
 			"git": {
 				{
 					Variation: "git init",
+					Links:     []string{"https://git-scm.com/docs/git-init"},
 					Questions: []Question{
 						{
 							Question: "How to initialize local git repository?",
+							Links:    []string{"https://git-scm.com/docs/git-init"},
 							Answers: []Answer{
 								{Answer: "git init", IsCorrect: true},
 								{Answer: "git create"},
@@ -43,7 +49,7 @@ func TestConfig_ReadConfig(t *testing.T) {
 	}
 
 	fs := afero.NewMemMapFs()
-	file, _ := fs.Create(DefaultPath)
+	file, _ := fs.Create(ExpandPath(DefaultPath))
 	_, _ = file.WriteString(content)
 
 	config := NewConfig(fs, DefaultPath)

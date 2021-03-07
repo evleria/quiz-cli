@@ -5,8 +5,7 @@ import (
 	"github.com/evleria/quiz-cli/pkg/cmdutils"
 	"github.com/evleria/quiz-cli/pkg/config"
 	"github.com/evleria/quiz-cli/pkg/iostreams"
-	"github.com/evleria/quiz-cli/pkg/printer"
-	"github.com/evleria/quiz-cli/pkg/runner"
+	"github.com/evleria/quiz-cli/pkg/quiz"
 	"github.com/spf13/cobra"
 	"math/rand"
 	"strconv"
@@ -17,13 +16,13 @@ import (
 type StartCmdOptions struct {
 	Categories []string
 
-	Config *config.Config
+	Config    *config.Config
 	IOStreams iostreams.IOStreams
 }
 
 func NewStartCmd(factory *cmdutils.Factory) *cobra.Command {
 	opts := &StartCmdOptions{
-		Config: factory.Config,
+		Config:    factory.Config,
 		IOStreams: factory.IOStreams,
 	}
 
@@ -47,9 +46,9 @@ func runStart(opts *StartCmdOptions) error {
 	variations := getVariations(categories, opts.Categories)
 	questions := pickQuestions(variations)
 
-	runner := runner.NewRunner(questions)
 	scanner := bufio.NewScanner(opts.IOStreams.In)
-	printer := printer.NewPrinter(opts.IOStreams.Out)
+	printer := quiz.NewPrinter(opts.IOStreams.Out)
+	runner := quiz.NewRunner(questions)
 	for runner.Next() {
 		question := runner.GenerateQuestion()
 
@@ -99,7 +98,9 @@ func pickQuestions(variations []config.Variation) []config.Question {
 
 	for _, variation := range variations {
 		if l := len(variation.Questions); l > 0 {
-			result = append(result, variation.Questions[rand.Intn(l)])
+			question := variation.Questions[rand.Intn(l)]
+			question.Links = append(variation.Links, question.Links...)
+			result = append(result, question)
 		}
 	}
 
