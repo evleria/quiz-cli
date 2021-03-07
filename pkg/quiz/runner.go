@@ -12,14 +12,20 @@ type Runner struct {
 	current int
 }
 
-type QuizResult struct {
-	Correct int
-	Total   int
+type Result struct {
+	Correct        int
+	Total          int
+	WrongQuestions []answeredQuestion
 }
 
 type answer struct {
 	Indices []int
 	Correct bool
+}
+
+type answeredQuestion struct {
+	Question config.Question
+	Answer   answer
 }
 
 func NewRunner(questions []config.Question) *Runner {
@@ -57,17 +63,25 @@ func (r *Runner) MarkAnswer(answered []int) {
 	}
 }
 
-func (r *Runner) Result() QuizResult {
+func (r *Runner) Result() Result {
 	correct := 0
-	for _, h := range r.history {
+	var wrongQuestions []answeredQuestion
+
+	for i, h := range r.history {
 		if h.Correct {
 			correct++
+		} else {
+			wrongQuestions = append(wrongQuestions, answeredQuestion{
+				Question: r.questions[i],
+				Answer:   h,
+			})
 		}
 	}
 
-	return QuizResult{
-		Correct: correct,
-		Total:   len(r.questions),
+	return Result{
+		Correct:        correct,
+		Total:          len(r.questions),
+		WrongQuestions: wrongQuestions,
 	}
 }
 
