@@ -1,4 +1,4 @@
-package runner
+package quiz
 
 import (
 	"github.com/evleria/quiz-cli/pkg/config"
@@ -7,14 +7,14 @@ import (
 
 type Runner struct {
 	questions []config.Question
-	history []answer
+	history   []answer
 
 	current int
 }
 
 type QuizResult struct {
 	Correct int
-	Total int
+	Total   int
 }
 
 type answer struct {
@@ -29,8 +29,8 @@ func NewRunner(questions []config.Question) *Runner {
 
 	return &Runner{
 		questions: questions,
-		history: make([]answer, len(questions)),
-		current: -1,
+		history:   make([]answer, len(questions)),
+		current:   -1,
 	}
 }
 
@@ -67,7 +67,7 @@ func (r *Runner) Result() QuizResult {
 
 	return QuizResult{
 		Correct: correct,
-		Total: len(r.questions),
+		Total:   len(r.questions),
 	}
 }
 

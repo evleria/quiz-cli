@@ -6,11 +6,13 @@ type Categories struct {
 
 type Variation struct {
 	Variation string
+	Links     []string
 	Questions []Question
 }
 
 type Question struct {
 	Question string
+	Links    []string
 	Answers  []Answer
 }
 
