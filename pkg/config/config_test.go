@@ -67,3 +67,14 @@ func TestConfig_ReadConfig_FileNotFound(t *testing.T) {
 
 	assert.ErrorContains(t, err, "file does not exist")
 }
+
+func TestConfig_ReadConfig_InvalidFormat(t *testing.T) {
+	fs := afero.NewMemMapFs()
+	file, _ := fs.Create(ExpandPath(DefaultPath))
+	_, _ = file.WriteString("ERROR")
+
+	config := NewConfig(fs, DefaultPath)
+	_, err := config.ReadConfig()
+
+	assert.ErrorContains(t, err, "yaml: unmarshal errors")
+}
