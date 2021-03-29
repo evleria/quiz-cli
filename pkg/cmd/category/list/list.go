@@ -14,14 +14,14 @@ import (
 type ListCmdOptions struct {
 	Verbose bool
 
-	Config    *config.Config
-	IOStreams iostreams.IOStreams
+	ConfigFunc func() config.Config
+	IOStreams  iostreams.IOStreams
 }
 
 func NewListCmd(factory *cmdutils.Factory) *cobra.Command {
 	opts := &ListCmdOptions{
-		Config:    factory.Config,
-		IOStreams: factory.IOStreams,
+		ConfigFunc: factory.ConfigFunc,
+		IOStreams:  factory.IOStreams,
 	}
 
 	cmd := &cobra.Command{
@@ -39,7 +39,7 @@ func NewListCmd(factory *cmdutils.Factory) *cobra.Command {
 }
 
 func runList(opts *ListCmdOptions) error {
-	categories, err := opts.Config.ReadConfig()
+	categories, err := opts.ConfigFunc().ReadConfig()
 	cmdutils.CheckError(err)
 
 	writer := bufio.NewWriter(opts.IOStreams.Out)

@@ -3,9 +3,7 @@ package main
 import (
 	"github.com/evleria/quiz-cli/pkg/cmd/root"
 	"github.com/evleria/quiz-cli/pkg/cmdutils"
-	"github.com/evleria/quiz-cli/pkg/config"
 	"github.com/evleria/quiz-cli/pkg/iostreams"
-	"github.com/spf13/afero"
 	"math/rand"
 	"os"
 	"time"
@@ -16,13 +14,10 @@ func main() {
 
 	factory := &cmdutils.Factory{
 		IOStreams: iostreams.IOStreams{
-			In: os.Stdin,
-			Out: os.Stdout,
+			In:     os.Stdin,
+			Out:    os.Stdout,
 			ErrOut: os.Stderr,
 		},
-		Config: config.NewConfig(
-			afero.NewOsFs(),
-			config.DefaultPath),
 	}
 
 	cmd := root.NewRootCmd(factory)
