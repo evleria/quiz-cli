@@ -6,7 +6,6 @@ import (
 )
 
 type Factory struct {
-	IOStreams iostreams.IOStreams
-	Config *config.Config
+	IOStreams  iostreams.IOStreams
+	ConfigFunc func() config.Config
 }
-

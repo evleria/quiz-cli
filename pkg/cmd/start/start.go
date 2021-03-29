@@ -16,14 +16,14 @@ import (
 type StartCmdOptions struct {
 	Categories []string
 
-	Config    *config.Config
-	IOStreams iostreams.IOStreams
+	ConfigFunc func() config.Config
+	IOStreams  iostreams.IOStreams
 }
 
 func NewStartCmd(factory *cmdutils.Factory) *cobra.Command {
 	opts := &StartCmdOptions{
-		Config:    factory.Config,
-		IOStreams: factory.IOStreams,
+		ConfigFunc: factory.ConfigFunc,
+		IOStreams:  factory.IOStreams,
 	}
 
 	cmd := &cobra.Command{
@@ -40,7 +40,7 @@ func NewStartCmd(factory *cmdutils.Factory) *cobra.Command {
 }
 
 func runStart(opts *StartCmdOptions) error {
-	categories, err := opts.Config.ReadConfig()
+	categories, err := opts.ConfigFunc().ReadConfig()
 	cmdutils.CheckError(err)
 
 	variations := getVariations(categories, opts.Categories)

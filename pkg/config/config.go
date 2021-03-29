@@ -3,30 +3,26 @@ package config
 import (
 	"github.com/spf13/afero"
 	"gopkg.in/yaml.v2"
+	"io"
 	"io/ioutil"
+	"net/http"
+	"strings"
 )
 
-const DefaultPath = "~/.quiz.yaml"
-
-type Config struct {
-	fs   afero.Fs
-	path string
+type Config interface {
+	ReadConfig() (*Categories, error)
 }
 
-func NewConfig(fs afero.Fs, path string) *Config {
-	return &Config{
-		fs:   fs,
-		path: ExpandPath(path),
+func CreateConfigFromPath(path string) Config {
+	if strings.HasPrefix(path, "http") {
+		return NewRemoteConfig(new(http.Client), path)
 	}
+
+	return NewFileConfig(afero.NewOsFs(), path)
 }
 
-func (c *Config) ReadConfig() (*Categories, error) {
-	file, err := c.fs.Open(c.path)
-	if err != nil {
-		return nil, err
-	}
-
-	content, err := ioutil.ReadAll(file)
+func readAll(reader io.Reader) (*Categories, error) {
+	content, err := ioutil.ReadAll(reader)
 	if err != nil {
 		return nil, err
 	}
