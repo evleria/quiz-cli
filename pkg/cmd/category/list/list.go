@@ -3,10 +3,12 @@ package list
 import (
 	"bufio"
 	"fmt"
+	"github.com/cheynewallace/tabby"
 	"github.com/evleria/quiz-cli/pkg/cmdutils"
 	"github.com/evleria/quiz-cli/pkg/config"
 	"github.com/evleria/quiz-cli/pkg/iostreams"
 	"github.com/spf13/cobra"
+	"text/tabwriter"
 )
 
 type ListCmdOptions struct {
@@ -43,15 +45,28 @@ func runList(opts *ListCmdOptions) error {
 	writer := bufio.NewWriter(opts.IOStreams.Out)
 	defer writer.Flush()
 
-	for name, variations := range categories.Categories {
-		if opts.Verbose {
-			fmt.Fprintf(writer, "%8s | variations: %2d, questions: %2d\n", name, len(variations), countQuestions(variations))
-		} else {
-			fmt.Fprintln(writer, name)
-		}
+	if opts.Verbose {
+		printCategoriesVerbose(writer, categories.Categories)
+	} else {
+		printCategories(writer, categories.Categories)
 	}
 
 	return nil
+}
+
+func printCategories(writer *bufio.Writer, categories map[string][]config.Variation) {
+	for name := range categories {
+		fmt.Fprintln(writer, name)
+	}
+}
+
+func printCategoriesVerbose(writer *bufio.Writer, categories map[string][]config.Variation) {
+	t := tabby.NewCustom(tabwriter.NewWriter(writer, 0, 0, 2, ' ', 0))
+	t.AddHeader("CATEGORY", "VARIATIONS", "QUESTIONS")
+	for name, variations := range categories {
+		t.AddLine(name, len(variations), countQuestions(variations))
+	}
+	t.Print()
 }
 
 func countQuestions(variations []config.Variation) int {

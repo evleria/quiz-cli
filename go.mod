@@ -3,6 +3,7 @@ module github.com/evleria/quiz-cli
 go 1.16
 
 require (
+	github.com/cheynewallace/tabby v1.1.1
 	github.com/fatih/color v1.7.0
 	github.com/spf13/afero v1.1.2
 	github.com/spf13/cobra v1.1.3
