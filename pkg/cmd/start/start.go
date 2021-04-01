@@ -15,6 +15,7 @@ import (
 
 type StartCmdOptions struct {
 	Categories []string
+	Limit      int
 
 	ConfigFunc func() config.Config
 	IOStreams  iostreams.IOStreams
@@ -35,6 +36,7 @@ func NewStartCmd(factory *cmdutils.Factory) *cobra.Command {
 	}
 
 	cmd.Flags().StringArrayVarP(&opts.Categories, "category", "c", nil, "filters categories for quiz")
+	cmd.Flags().IntVarP(&opts.Limit, "limit", "l", 0, "limits number of questions")
 
 	return cmd
 }
@@ -45,6 +47,7 @@ func runStart(opts *StartCmdOptions) error {
 
 	variations := getVariations(categories, opts.Categories)
 	questions := pickQuestions(variations)
+	questions = limit(questions, opts.Limit)
 
 	scanner := bufio.NewScanner(opts.IOStreams.In)
 	printer := quiz.NewPrinter(opts.IOStreams.Out)
@@ -120,4 +123,11 @@ func getAnswers(text string) []int {
 	}
 
 	return result
+}
+
+func limit(questions []config.Question, limit int) []config.Question {
+	if limit > 0 && len(questions) > limit {
+		return questions[:limit]
+	}
+	return questions
 }
